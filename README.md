@@ -12,7 +12,7 @@ The Service itself executes ETL processes in an automated and highly parallelize
   - `/DIZService.Worker`: Service to execute (uses the logic of Core)
   - `/www`: files needed to send result mails etc.
 - `/app`: R/Shiny Monitoring
-- `/res`: SQL-Files to setup your MS SQL DB for Service usage
+- `/res`: SQL-Files to setup your MS SQL DB for Service usage (name of the directory is the DB-Schema)
 
 ## Requirements
 
