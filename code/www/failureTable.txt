@@ -1,0 +1,44 @@
+<tr>
+    <td colspan="3" style="background-color: #EBEBEB; padding: 20px; text-align: center; padding-bottom: 30px;">
+        <h3 style="font-family: Arial, sans-serif; font-size: 24px; color: #434C5E;">Fehler</h3>
+    </td>
+</tr>
+<tr>
+    <td colspan="3" style="font-family: Arial, sans-serif; font-size: 12px">
+        <table width="100%" cellpadding="5px" cellspacing="5px" style="padding-left: 50px; padding-bottom: 10%;">
+            <tr>
+                <th style="width: 80px">
+                    <p style="font-family: Arial, sans-serif; font-size: 12px; font-weight: bold; color: #434C5E; text-align: left;">Prozess</p>
+                </th>
+                <th style="width: 80px">
+                    <p style="font-family: Arial, sans-serif; font-size: 12px; font-weight: bold; color: #434C5E; text-align: left;">Module</p>
+                </th>
+                <th style="width: 100px">
+                    <p style="font-family: Arial, sans-serif; font-size: 12px; font-weight: bold; color: #434C5E; text-align: left;">Befehl</p>
+                </th>
+                <th style="width: 80px">
+                    <p style="font-family: Arial, sans-serif; font-size: 12px; font-weight: bold; color: #434C5E; text-align: left;">Anforderung</p>
+                </th>
+                <th style="width: 30px">
+                    <p style="font-family: Arial, sans-serif; font-size: 12px; font-weight: bold; color: #434C5E; text-align: center;">Von</p>
+                </th>
+                <th style="width: 30px">
+                    <p style="font-family: Arial, sans-serif; font-size: 12px; font-weight: bold; color: #434C5E; text-align: center;">Bis</p>
+                </th>
+                <th style="width: 30px">
+                    <p style="font-family: Arial, sans-serif; font-size: 12px; font-weight: bold; color: #434C5E; text-align: center;">Dauer</p>
+                </th>
+                <th style="width: 30px">
+                    <p style="font-family: Arial, sans-serif; font-size: 12px; font-weight: bold; color: #434C5E; text-align: center;">Meldung</p>
+                </th>
+                <th style="width: 30px">
+                    <p style="font-family: Arial, sans-serif; font-size: 12px; font-weight: bold; color: #434C5E; text-align: center;">Fehler</p>
+                </th>
+                <th style="width: 30px">
+                    <p style="font-family: Arial, sans-serif; font-size: 12px; font-weight: bold; color: #434C5E; text-align: center;">Fehler_ID</p>
+                </th>
+            </tr>
+            {{DATAROW}}
+        </table>
+    </td>
+</tr>

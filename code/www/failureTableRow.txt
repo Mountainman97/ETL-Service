@@ -1,0 +1,32 @@
+<tr>
+    <td style="width: 80px">
+        <p style="font-family: Arial, sans-serif; font-size: 12px; color: #434C5E; text-align: left;">{{PROZESS}}</p>
+    </td>
+    <td style="width: 80px">
+        <p style="font-family: Arial, sans-serif; font-size: 12px; color: #434C5E; text-align: left;">{{MODUL}}</p>
+    </td>
+    <td style="width: 100px">
+        <p style="font-family: Arial, sans-serif; font-size: 12px; color: #434C5E; text-align: left;">{{BEFEHL}}</p>
+    </td>
+    <td style="width: 30px">
+        <p style="font-family: Arial, sans-serif; font-size: 12px; color: #434C5E; text-align: center;">{{ANFORDERUNG}}</p>
+    </td>
+    <td style="width: 30px">
+        <p style="font-family: Arial, sans-serif; font-size: 12px; color: #434C5E; text-align: center;">{{VON}}</p>
+    </td>
+    <td style="width: 30px">
+        <p style="font-family: Arial, sans-serif; font-size: 12px; color: #434C5E; text-align: center;">{{BIS}}</p>
+    </td>
+    <td style="width: 30px">
+        <p style="font-family: Arial, sans-serif; font-size: 12px; color: #434C5E; text-align: center;">{{DAUER}}</p>
+    </td>
+    <td style="width: 30px">
+        <p style="font-family: Arial, sans-serif; font-size: 12px; color: #434C5E; text-align: center;">{{MELDUNGSTEXT}}</p>
+    </td>
+    <td style="width: 30px">
+        <p style="font-family: Arial, sans-serif; font-size: 12px; color: #434C5E; text-align: center;">{{FEHLERTEXT}}</p>
+    </td>
+    <td style="width: 30px">
+        <p style="font-family: Arial, sans-serif; font-size: 12px; color: #434C5E; text-align: center;">{{FEHLERID}}</p>
+    </td>
+</tr>

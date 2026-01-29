@@ -1,0 +1,20 @@
+<tr>
+    <td style="width: 80px">
+        <p style="font-family: Arial, sans-serif; font-size: 12px; color: #434C5E; text-align: left;">{{MODUL}}</p>
+    </td>
+    <td style="width: 100px">
+        <p style="font-family: Arial, sans-serif; font-size: 12px; color: #434C5E; text-align: left;">{{INFO}}</p>
+    </td>
+    <td style="width: 30px">
+        <p style="font-family: Arial, sans-serif; font-size: 12px; color: #434C5E; text-align: center;">{{VON}}</p>
+    </td>
+    <td style="width: 30px">
+        <p style="font-family: Arial, sans-serif; font-size: 12px; color: #434C5E; text-align: center;">{{BIS}}</p>
+    </td>
+    <td style="width: 30px">
+        <p style="font-family: Arial, sans-serif; font-size: 12px; color: #434C5E; text-align: center;">{{DAUER}}</p>
+    </td>
+    <td style="width: 30px">
+        <p style="font-family: Arial, sans-serif; font-size: 12px; color: #434C5E; text-align: center;">{{SUCC}}</p>
+    </td>
+</tr>

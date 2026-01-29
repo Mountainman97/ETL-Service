@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <DefineConstants>WINDOWS</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AdysTech.CredentialManager" Version="2.6.0" />
+    <PackageReference Include="ClosedXML" Version="0.105.0" />
+    <PackageReference Include="GenericParsing" Version="1.6.0" />
+    <PackageReference Include="InterSystems.Data.IRISClient" Version="2.6.0" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.9" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="9.0.9" />
+    <PackageReference Include="Microsoft.Extensions.Logging.EventLog" Version="9.0.9" />
+    <PackageReference Include="NodaTime" Version="3.2.2" />
+    <PackageReference Include="Npgsql" Version="9.0.3" />
+    <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="23.9.1" />
+    <PackageReference Include="Serilog" Version="4.3.0" />
+    <PackageReference Include="Serilog.Extensions.Hosting" Version="9.0.0" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="9.0.2" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+    <PackageReference Include="Serilog.Sinks.EventLog" Version="4.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+    <PackageReference Include="SkiaSharp" Version="3.119.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="InterSystems.Data.CacheClient">
+      <HintPath>..\publish\InterSystems.Data.CacheClient.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
