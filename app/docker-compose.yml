@@ -1,0 +1,15 @@
+version: '3.7'
+
+services:
+  etl:
+    container_name: etl
+    image: etl
+    platform: linux/amd64
+    restart: always
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "4444"
+    volumes:
+      - .Renviron:/srv/shiny-server/etl_app/.Renviron
