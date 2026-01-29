@@ -14,7 +14,19 @@ The Service itself executes ETL processes in an automated and highly parallelize
 - `/app`: R/Shiny Monitoring
 - `/res`: SQL-Files to setup your MS SQL DB for Service usage (name of the directory is the DB-Schema)
 
-## Requirements
+## Overview
+
+- [Structure](#structure)
+- [Service](#service)
+  - [Requirements](#requirements)
+  - [Needed Code-Adjustments](#needed-code-adjustments)
+  - [Build and Installation](#build-and-installation)
+- [R/Shiny Monitoring](#rshiny-monitoring)
+  - [Requirements](#requirements-rshiny)
+
+## Service
+
+### Requirements
 
 - Installed .NET Runtime 8.0.20
 - Installed .NET SDK 8.0.414
@@ -42,30 +54,52 @@ The Service itself executes ETL processes in an automated and highly parallelize
   - `<ServiceName>_db`: Database to use in target
   - If not set use: `setx <ServiceName>_... "Value" /M` (e.g., setx ETLService_DEV_user "Your-User" /M)
 
-## Needed Code-Adjustments
+### Needed Code-Adjustments
 
 To run the code successfully for your use-case, you need to adjust 3 functions in `DIZCode.Helper` (`SendInfoMail`, `SendStopMail`, `SendResultMail`). You need to replace all `TBD`s to your needed Emails and in line 473 the name of your mail credentials saved in windows credential manager.
 
-## Build and Installation
+### Build and Installation
 
-### Windows
+#### Windows
 
-#### Build, Create and Start Service
+##### Build, Create and Start Service
 
 `code\src\DIZService> .\build_and_create_service.ps1 -ServiceName "<Servicename>" -Stage "<Stage>"`
 
-#### Restart Service
+##### Restart Service
 
 `code\src\DIZService> .\restart_service.ps1 -ServiceName "<Servicename>"`
 
-### Linux
+#### Linux
 
 **IMPORTANT:** Installation on linux not tested yet!
 
-#### Build, Create and Start Service
+##### Build, Create and Start Service
 
 `code\src\DIZService> .\create_and_start_service.ps1 "<Servicename>" "<Path-to-app-dll>" "<user>" "<publish-dir>" "<datasource>" "<db>" "<user>" "<pwd>" "<Stage>"`
 
-#### Restart Service
+##### Restart Service
 
 `code\src\DIZService> .\restart_service.sh "<Servicename>"`
+
+## R/Shiny Monitoring
+
+You need access data for your [MS SQL Database](https://www.microsoft.com/de-de/sql-server) that runs the service. This data needs to be added in `/app/.Renviron`. The App can be started using [Docker](https://www.docker.com/) by building image with `docker build -t etl .` and after that running `docker compose up -d`. When configured correctly the app should be available via Port 4444.
+
+### Requirements R/Shiny
+
+The following R-Packages are needed:
+- shiny (1.10.0)
+- shinymanager (1.0.410)
+- tidyverse (2.0.0)
+- visNetwork (2.1.2)
+- DBI (1.2.3)
+- odbc (1.3.5)
+- bslib (0.9.0)
+- shinyWidgets (0.9.0)
+- hms (1.1.3)
+- timevis (2.1.0)
+- glue (1.6.2)
+- htmlwidgets (1.6.4)
+- data.tree (1.1.0)
+- shinyTree (0.3.1)
