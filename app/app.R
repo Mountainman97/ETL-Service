@@ -76,13 +76,13 @@ ui <- page_navbar(
         flex-direction: column;
       }
 
-      /* Let the body scroll if content overflows */
+      /* Let the modal body scroll if content overflows */
       .modal-body {
         flex: 1 1 auto !important;
-        overflow: hidden;
-        max-height: calc(100% - 60px) !important; /* Header/Footer abziehen */
+        overflow-y: auto !important;       /* enable vertical scroll */
+        max-height: calc(100vh - 120px) !important; /* subtract header/footer height */
         padding: 1rem !important;
-      }
+}
 
       /* Keep header/footer fixed */
       .modal-header, .modal-footer {
@@ -91,8 +91,8 @@ ui <- page_navbar(
     "))
   ),
 
-  tags$head(
-    tags$style(HTML("
+tags$head(
+  tags$style(HTML("
       .duration-rect:hover {
         background-color: #e6e6e6;
         cursor: help;
@@ -122,17 +122,39 @@ ui <- page_navbar(
       }
 
     "))
-  ),
+),
 
-  tags$style(HTML("
+tags$style(HTML("
+
+   /* Timeline background grey */
+    .timevis {
+      background-color: #F9F9F9 !important;
+    }
+
+  .vis-time-axis .vis-text {
+    color: #000000 !important;
+  }
+
+   /* Timeline items (the content boxes) */
+    .vis-item {
+      background-color: #23383e !important;
+      color: white !important;
+      border: 1px solid #23383e !important;
+      border-radius: 6px;
+      padding: 4px 8px;
+    }
+
+")),
+
+tags$style(HTML("
     li.level-Workflow  > .jstree-anchor { color: #B4F4B0 !important; }
     li.level-Paket     > .jstree-anchor { color: #FFD09F !important; }
     li.level-Umsetzung > .jstree-anchor { color: #CAAEFF !important; }
     li.level-Schritt   > .jstree-anchor { color: #C2F2F2 !important; }
   ")),
 
-  tags$head(
-    tags$style(HTML("
+tags$head(
+  tags$style(HTML("
     /* overlay inside modal */
     #sql_overlay {
       display: none;
@@ -159,63 +181,66 @@ ui <- page_navbar(
       $('#sql_overlay').removeClass('visible');
     });
   "))
-  ),
+),
 
 
-  nav_panel(
-    title = "Prozesse",
+nav_panel(
+  title = "Prozesse",
 
-    # Tab-Container statt Cards
-    tabsetPanel(
-      id = "prozess_tabs",
-      type = "tabs",  # default; kann auch "pills" sein
+  # Tab-Container statt Cards
+  tabsetPanel(
+    id = "prozess_tabs",
+    type = "tabs",  # default; kann auch "pills" sein
 
-      tabPanel(
-        title = span("Letzte Ausführung jedes Workflows",
-                     style = "color: #EBEBEB;"),
-        value = "letzte_ausführung",
+    tabPanel(
+      title = span("Letzte Ausführung jedes Workflows",
+                   style = "color: #EBEBEB;"),
+      value = "letzte_ausführung",
+      div(
+        class = "scroll-container",
+        style = "max-height: calc(100vh - 100px); overflow-y: auto; overflow-x: hidden; padding: 0; margin: 0;",
         uiOutput("workflow_buttons_letzte_ausfuehrung")
-
-      ),
-
-      # 1. Tab
-      tabPanel(
-        title = span(
-          "Laufende Datenübernahmen",
-          style = "color: #EBEBEB;"
-        ),
-        value = "laufend",
-        uiOutput("workflow_buttons_laufend")
-      ),
-
-      # 2. Tab
-      tabPanel(
-        title = span("Tagesaktuelle Datenübernahmen",
-                     style = "color: #EBEBEB;"),
-        value = "exec",
-        div(
-          class = "scroll-container",
-          style = "max-height: 100vh; overflow-y: auto; overflow-x: hidden; padding: 0px; margin: 0;",
-          uiOutput("workflow_buttons_exec")
-        ),
-      ),
-
-      # 3. Tab
-      tabPanel(
-        title = span("Nächste Datenübernahme",
-                     style = "color: #EBEBEB;"),
-        value = "planned",
-        uiOutput("workflow_buttons_planned")
-
       )
+    ),
+
+    # 1. Tab
+    tabPanel(
+      title = span(
+        "Laufende Datenübernahmen",
+        style = "color: #EBEBEB;"
+      ),
+      value = "laufend",
+      uiOutput("workflow_buttons_laufend")
+    ),
+
+    # 2. Tab
+    tabPanel(
+      title = span("Tagesaktuelle Datenübernahmen",
+                   style = "color: #EBEBEB;"),
+      value = "exec",
+      div(
+        class = "scroll-container",
+        style = "max-height: calc(100vh - 100px); overflow-y: auto; overflow-x: hidden; padding: 0; margin: 0;",
+        uiOutput("workflow_buttons_exec")
+      )
+    ),
+
+    # 3. Tab
+    tabPanel(
+      title = span("Nächste Datenübernahme",
+                   style = "color: #EBEBEB;"),
+      value = "planned",
+      uiOutput("workflow_buttons_planned")
 
     )
-  ),
-  nav_panel(
-    title = "Workflows",
-    uiOutput("wf_selector"),
-    visNetworkOutput("etl_panel")
-  ),
+
+  )
+),
+nav_panel(
+  title = "Workflows",
+  uiOutput("wf_selector"),
+  visNetworkOutput("etl_panel")
+),
 
 )
 
@@ -403,7 +428,7 @@ output$workflow_buttons_letzte_ausfuehrung <- renderUI({
     col <- if_else(letzte_ausgefuehrte_workflows$Erfolgreich[i] == TRUE, "success", "danger")
 
     btn <- actionBttn(
-      inputId = paste0("workflow_btn_", letzte_ausgefuehrte_workflows$ETL_Prozesslaeufe_ID[i], "_letzte"),
+      inputId = paste0("workflow_btn_", letzte_ausgefuehrte_workflows$ETL_Prozesslaeufe_ID[i]),
       label   = full_label,
       style   = "stretch",
       color   = col,
@@ -420,13 +445,13 @@ workflows_error <- reactive({
   query.workflows_error <- glue_sql("
 
   SELECT
-  p.[ETL_Prozesslaeufe_ID]
-    ,p.[ETL_Workflow_ID]
-    ,w.Workflowname
-    ,CAST(p.Erfolgreich AS INT) AS Erfolgreich
+ -- p.[ETL_Prozesslaeufe_ID]
+  --  ,p.[ETL_Workflow_ID]
+  --  ,w.Workflowname
+  --  ,CAST(p.Erfolgreich AS INT) AS Erfolgreich
+      f.ETL_Fehlermeldungen_ID
 	  ,pp.ETL_Paketschritte_ID
 	  ,s.Schrittname
-	  ,f.ETL_Fehlermeldungen_ID
 	  ,f.[Fehlertyp]
 	  ,f.[Meldungstext]
 	  ,f.[Fehlertext]
@@ -951,7 +976,7 @@ output$workflow_buttons_laufend <- renderUI({
 
 
       actionBttn(
-        inputId = paste0("workflow_btn_", laufende_workflows$ETL_Prozesslaeufe_ID[i], "_laufende"),
+        inputId = paste0("workflow_btn_", laufende_workflows$ETL_Prozesslaeufe_ID[i]),
         label   = full_label,
         style   = "stretch",
         color   = "default",
@@ -1023,7 +1048,7 @@ output$workflow_buttons_exec <- renderUI({
     col <- if_else(exec_workflows$Erfolgreich[i] == TRUE, "success", "danger")
 
     btn <- actionBttn(
-      inputId = paste0("workflow_btn_", exec_workflows$ETL_Prozesslaeufe_ID[i], "_exec"),
+      inputId = paste0("workflow_btn_", exec_workflows$ETL_Prozesslaeufe_ID[i]),
       label   = full_label,
       style   = "stretch",
       color   = col,
@@ -1032,8 +1057,6 @@ output$workflow_buttons_exec <- renderUI({
   })
   do.call(fluidRow, buttons)
 })
-
-
 
 
 tree_data <- reactive({
@@ -1058,51 +1081,111 @@ tree_data <- reactive({
     }, character(1))
     structure(res, stdata = nd$name)
   }
-
   build(root)
 })
 
+output$tree <- renderTree({
+  req(tree_data())
+  tree_data()
+})
+outputOptions(output, "tree", suspendWhenHidden = FALSE)
+
 # encapsulate the *first* modal in a function
 show_etl_modal <- function(id) {
+  # ensure workflow_id is available
+  wf_id <- isolate(workflow_id())
+  req(wf_id, id)
+
+  # ensure the active tab is available
+  active_tab <- isolate(input$prozess_tabs)
+  req(active_tab)
+
+  # pick the right source depending on active tab
+  modul_name <- switch(
+    active_tab,
+    "exec" = {
+      exec_workflows %>%
+        dplyr::filter(ETL_Prozesslaeufe_ID == id) %>%
+        dplyr::pull(Workflowname) %>%
+        unique()
+    },
+    "letzte_ausführung" = {
+      letzte_ausgefuehrte_workflows %>%
+        dplyr::filter(ETL_Prozesslaeufe_ID == id) %>%
+        dplyr::pull(Workflowname) %>%
+        unique()
+    },
+    NA
+  )
+
+  # build title safely
+  title_txt <- if (!is.na(modul_name) && length(modul_name) > 0) {
+    paste("ETL-Prozesslauf:", id, "| Workflow:", wf_id, "-", modul_name)
+  } else {
+    paste("ETL-Prozesslauf:", id, "| Workflow:", wf_id)
+  }
+
+  # show modal only if everything is ready
   showModal(modalDialog(
-    title = paste("ETL-Prozesslauf", id),
-    # main tabset (keep your id/value etc.)
+    title = title_txt,
     tabsetPanel(
       id = "modal_tabs",
       selected = "ETL-Baum",
-      tabPanel(title = span("ETL-Baum", style = "color: #EBEBEB;"),
-               value = "ETL-Baum",
-               fluidRow(
-                 column(2, div(style="min-height:300px; overflow:auto;", shinyTree(paste0("tree", "_", id),
-                                                                                   checkbox = FALSE,
-                                                                                   themeIcons = FALSE,
-                                                                                   themeDots = FALSE,
-                                                                                   theme = 'proton',
-                                                                                   wholerow = TRUE,
-                                                                                   whole_node =FALSE,
-                                                                                   stripes = FALSE))),
-                 column(10, visNetworkOutput("etl", height = "600px"))
-               )
+      tabPanel(
+        title = span("ETL-Baum", style = "color: #EBEBEB;"),
+        value = "ETL-Baum",
+        fluidRow(
+          column(
+            2,
+            div(style="min-height:300px; overflow:auto;",
+                shinyTree(
+                  "tree",
+                  checkbox = FALSE,
+                  themeIcons = FALSE,
+                  themeDots = FALSE,
+                  theme = 'proton',
+                  wholerow = TRUE,
+                  whole_node = FALSE,
+                  stripes = FALSE
+                )
+            )
+          ),
+          column(
+            10,
+            visNetworkOutput("etl", height = "600px")
+          )
+        )
       ),
-      tabPanel(title = span("Error",style = "color: #EBEBEB;"), value = "Error", DTOutput("error_table")),
-      tabPanel(title = span("Timeline",style = "color: #EBEBEB;"), value = "Timeline", timevisOutput("timeline"))
+      tabPanel(
+        title = span("Error", style = "color: #EBEBEB;"),
+        value = "Error",
+        DTOutput("error_table")
+      ),
+      tabPanel(
+        title = span("Timeline", style = "color: #EBEBEB;"),
+        value = "Timeline",
+        timevisOutput("timeline")
+      )
     ),
     easyClose = TRUE,
     size = "xl",
     footer = modalButton("Close"),
-    # NOTE: this div is INSIDE the same modal DOM, initially hidden
-    tags$div(id = "sql_overlay",
-             tags$div(class = "sql-box",
-                      tags$h4("SQL-Query"),
-                      verbatimTextOutput("sql_text"),
-                      tags$div(class = "sql-footer",
-                               actionButton("back_to_overview", "← Zurück"),
-                               modalButton("Schließen")
-                      )
-             )
+    tags$div(
+      id = "sql_overlay",
+      tags$div(
+        class = "sql-box",
+        tags$h4("SQL-Query"),
+        verbatimTextOutput("sql_text"),
+        tags$div(
+          class = "sql-footer",
+          actionButton("back_to_overview", "← Zurück"),
+          modalButton("Schließen")
+        )
+      )
     )
   ))
 }
+
 
 
 show_sql_query <- function(node_id) {
@@ -1156,7 +1239,6 @@ show_sql_query <- function(node_id) {
   )
 }
 
-
 ## From visNetwork
 observeEvent(input$etl_selected_node, {
   show_sql_query(input$etl_selected_node)
@@ -1181,17 +1263,12 @@ observeEvent(input$tree, {
   show_sql_query(node_id)
 })
 
-
-
-
-
 observeEvent(input$back_to_etl, {
   updateTabsetPanel(session, "modal_tabs", selected = "ETL-Baum")
 })
 
 # --- 0) cache for the built tree (plain R list) ---
 tree_cached <- reactiveVal(NULL)
-
 # --- 1) helper: build the shinyTree list structure from FromDataFrameNetwork() result ---
 build_tree_from_root <- function(root) {
   if (is.null(root)) return(list())
@@ -1212,12 +1289,11 @@ build_tree_from_root <- function(root) {
 
   build(root)
 }
-
 # --- 2) keep the cache updated whenever etl() changes ---
 observe({
   df <- req(etl())   # IMPORTANT: etl() should reflect the current process_id()
 
-    # safe defensive transforms (avoid pipe-to-anonymous-function patterns)
+  # safe defensive transforms (avoid pipe-to-anonymous-function patterns)
   df2 <- df %>%
     dplyr::mutate(
       Parent_PK = dplyr::if_else(Parent_PK == "" | is.na(Parent_PK), "root2", Parent_PK),
@@ -1242,134 +1318,81 @@ observe({
   tree_cached(built_tree)
 })
 
-# --- Render tree für exec Tab (show_etl_modal) ---
+# --- 3) render the tree once (binding stays in output) ---
 output$tree <- renderTree({
   req(tree_cached())
   tree_cached()
 })
+
 outputOptions(output, "tree", suspendWhenHidden = FALSE)
-
-# --- Render tree_letzte für letzte_ausführung Tab ---
-output$tree_letzte <- renderTree({
-  req(tree_cached())
-  tree_cached()
-})
-outputOptions(output, "tree_letzte", suspendWhenHidden = FALSE)
-
 
 # --- 4) minimal button observers (open ETL modal) ---
 observe({
-  # Hole alle Input-Namen
-  input_names <- names(input)
+  lapply(exec_workflows$ETL_Prozesslaeufe_ID, function(id) {
+    btn <- paste0("workflow_btn_", id)
 
-  # Finde alle workflow button inputs
-  workflow_buttons <- grep("^workflow_btn_", input_names, value = TRUE)
+    observeEvent(input[[btn]], {
+      process_id(id)          # set current process so etl() reacts
+      show_etl_modal(id)      # open modal
 
-  # Prüfe jeden Workflow-Button
-  for (btn_id in workflow_buttons) {
-    # Nur verarbeiten wenn Button tatsächlich geklickt wurde (value > 0)
-    if (!is.null(input[[btn_id]]) && input[[btn_id]] > 0) {
+      # AFTER modal DOM is present, force tab selection and update the tree
+      session$onFlushed(function() {
+        # force ETL-Baum selected (ensure you gave the tabPanel value = "ETL-Baum")
+        updateTabsetPanel(session, "modal_tabs", selected = "ETL-Baum")
 
-      # Extrahiere NUR die numerische ID aus dem Button-Namen
-      # Für "workflow_btn_23687_exec" -> extrahiere "23687"
-      # Für "workflow_btn_23687_letzte" -> extrahiere "23687"
+        # use isolate(tree_cached()) because we're in a non-reactive callback
+        try({
+          shinyTree::updateTree(session, "tree", isolate(tree_cached()))
+        }, silent = TRUE)
 
-      # Methode 1: Mit regulärem Ausdruck (EMPFOHLEN)
-      id_match <- regmatches(btn_id, regexpr("workflow_btn_(\\d+)", btn_id, perl = TRUE))
-      if (length(id_match) > 0) {
-        # Entferne "workflow_btn_" Prefix
-        id_part <- sub("^workflow_btn_", "", id_match)
-      } else {
-        next  # Überspringe wenn keine ID gefunden
-      }
+        # small JS nudge to ensure jstree redraw (add the JS handler in ui once)
+        session$sendCustomMessage("refreshTree", "tree")
+      }, once = TRUE)
+    }, ignoreInit = TRUE)
+  })
+})
 
-      # Alternative Methode 2: Mit strsplit (falls Methode 1 nicht funktioniert)
-      # parts <- strsplit(btn_id, "_")[[1]]
-      # # parts = c("workflow", "btn", "23687", "exec")
-      # if (length(parts) >= 3) {
-      #   id_part <- parts[3]  # Das ist "23687"
-      # } else {
-      #   next
-      # }
+# --- 5) Zurück from SQL modal: remove SQL modal, reopen ETL modal and refresh tree ---
+# back handler (replace your existing observeEvent for back_to_overview)
+observeEvent(input$back_to_overview, {
+  removeModal()
+  show_etl_modal(process_id())
 
-      # Alternative Methode 3: Mit gsub und Regex
-      # id_part <- gsub("^workflow_btn_(\\d+).*$", "\\1", btn_id)
+  session$onFlushed(function() {
+    # make sure tab has a value = "ETL-Baum" in UI
+    tryCatch({
+      updateTabsetPanel(session, "modal_tabs", selected = "ETL-Baum")
+    }, error = function(e) {
+      message("updateTabsetPanel error: ", conditionMessage(e))
+    })
 
-      # Nutze isolate() um reaktive Abhängigkeiten zu vermeiden
-      isolate({
-        # Setze die Process-ID (nur die Nummer, ohne Suffix)
-        process_id(id_part)
-
-        # Bestimme welcher Tab aktiv ist
-        current_tab <- input$prozess_tabs
-
-        if (current_tab == "exec") {
-          # --- MODAL FÜR AUSGEFÜHRTE WORKFLOWS (exec Tab) ---
-          show_etl_modal(id_part)
-
-          # AFTER modal DOM is present, force tab selection and update the tree
-          session$onFlushed(function() {
-            # force ETL-Baum selected
-            updateTabsetPanel(session, "modal_tabs", selected = "ETL-Baum")
-
-            # use isolate(tree_cached()) because we're in a non-reactive callback
-            try({
-              shinyTree::updateTree(session, paste0("tree_", id_part), isolate(tree_cached()))
-            }, silent = TRUE)
-
-            # small JS nudge to ensure jstree redraw
-            session$sendCustomMessage("refreshTree", paste0("tree_", id_part))
-          }, once = TRUE)
-
-        } else if (current_tab == "letzte_ausführung") {
-          # --- MODAL FÜR LETZTE AUSFÜHRUNGEN (letzte_ausführung Tab) ---
-          showModal(modalDialog(
-            tabsetPanel(
-              id = "modal_tabs",
-              tabPanel(
-                title = span("ETL-Baum", style = "color: #EBEBEB;"),
-                value = "ETL-Baum",
-                fluidRow(
-                  column(
-                    width = 4,
-                    shinyTree(paste0("tree_", id_part),
-                              checkbox = FALSE,
-                              themeIcons = FALSE,
-                              themeDots = FALSE,
-                              theme = 'proton',
-                              wholerow = TRUE,
-                              whole_node = FALSE,
-                              stripes = FALSE)
-                  ),
-                  column(
-                    width = 8,
-                    visNetworkOutput("etl", height = "400px")
-                  )
-                )
-              ),
-
-              tabPanel(
-                title = span("Error", style = "color: #EBEBEB;"),
-                DT::DTOutput("error_table")
-              ),
-
-              tabPanel(
-                title = span("Timeline", style = "color: #EBEBEB;"),
-                div(
-                  style = "height:500px; overflow-y: auto; border: 1px solid #ccc;",
-                  timevisOutput("timeline")
-                )
-              )
-            ),
-            easyClose = TRUE,
-            size = "xl",
-            class = "fullscreen-modal",
-            footer = modalButton("Close")
-          ))
-        }
+    # push cached tree into client (use isolate to avoid reactive evaluation here)
+    tc <- isolate(tree_cached())
+    if (!is.null(tc) && length(tc) > 0) {
+      tryCatch({
+        shinyTree::updateTree(session, "tree", tc)
+      }, error = function(e) {
+        message("updateTree failed: ", conditionMessage(e))
       })
     }
-  }
+
+    # Ask client to attempt safe refresh (see JS handler below)
+    tryCatch({
+      session$sendCustomMessage("safeRefreshWidgets", list(tree = "tree", network = "etl"))
+    }, error = function(e) {
+      message("safeRefreshWidgets send failed: ", conditionMessage(e))
+    })
+  }, once = TRUE)
+})
+
+observe({
+  lapply(letzte_ausgefuehrte_workflows$ETL_Prozesslaeufe_ID, function(id) {
+    btn <- paste0("workflow_btn_", id)
+    observeEvent(input[[btn]], {
+      process_id(id)
+      show_etl_modal(id)
+    }, ignoreInit = TRUE)
+  })
 })
 
 #----Extract workflow ID per button-----
@@ -1422,6 +1445,8 @@ output$etl <- renderVisNetwork({
       Level       = trimws(as.character(Level)),
       Erfolgreich = as.integer(Erfolgreich)
     )
+
+  req(nrow(data) > 0)
 
   # 3) Nodes mit case_when einfärben
   nodes <- data %>%
@@ -1816,7 +1841,7 @@ output$timeline <- renderTimevis({
       by = c("id" = "PK")
     ) %>%
     dplyr::mutate(
-      style = paste0("background-color:", level_colors[Level], ";")
+      style = paste0("background-color:", level_colors[Level],"; border:none;")
     )
 
 
@@ -1836,11 +1861,17 @@ output$timeline <- renderTimevis({
   timevis(data = timeline_data,
           groups = groups,
           options = list(
-            groupOrder = htmlwidgets::JS("function(a,b) {return a.content > b.content;}")
+            groupOrder = htmlwidgets::JS("function(a,b) {return a.content > b.content;}"),
+            template = htmlwidgets::JS("
+      function(item) {
+        return '<div style=\"color:white;\">' + item.content + '</div>';
+      }
+    ")
           )
   )
 
 })
+
 
 }
 
