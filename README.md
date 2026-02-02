@@ -84,6 +84,16 @@ To run the code successfully for your use-case, you need to adjust 3 functions i
 
 ## R/Shiny Monitoring
 
+### Example Footage
+
+<img width="1160" height="512" alt="Baum" src="https://github.com/user-attachments/assets/bcdf8bbc-8776-46da-9772-ba7c16e15214" />
+
+<img width="1885" height="834" alt="MIE26_P1" src="https://github.com/user-attachments/assets/9089089b-32b1-4a12-9878-6184e9ef82a3" />
+
+<img width="1729" height="824" alt="MIE26_P3" src="https://github.com/user-attachments/assets/68750a26-de9a-4fa1-b262-c838fc13e874" />
+
+### Execution
+
 You need access data for your [MS SQL Database](https://www.microsoft.com/de-de/sql-server) that runs the service. This data needs to be added in `/app/.Renviron`. The App can be started using [Docker](https://www.docker.com/) by building image with `docker build -t etl .` and after that running `docker compose up -d`. When configured correctly the app should be available via Port 4444.
 
 ### Requirements R/Shiny
